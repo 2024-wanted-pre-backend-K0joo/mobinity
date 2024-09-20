@@ -19,7 +19,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeRequests(auth -> auth
-                        .requestMatchers("/users/login", "/users/signup", "/h2-console/**").permitAll()
+                        .requestMatchers("/users/signin", "/users/signup", "/h2-console/**").permitAll()
                         .anyRequest().authenticated())
                 .headers(headers -> headers.frameOptions().disable()) // H2 콘솔 접근을 위한 프레임 옵션 비활성화
                 .formLogin(AbstractHttpConfigurer::disable); // 기본 폼 로그인 비활성화
