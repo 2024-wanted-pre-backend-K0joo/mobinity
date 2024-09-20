@@ -13,9 +13,9 @@ import wanted.mobinity.domain.user.dto.UserSignUpResponseDto;
 import wanted.mobinity.domain.user.repository.UserRepository;
 import wanted.mobinity.global.error.ErrorCode;
 import wanted.mobinity.global.error.exception.EntityAlreadyExistException;
-import wanted.mobinity.global.error.exception.EntityNotFoundException;
 
-import java.util.Date;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -38,7 +38,7 @@ public class UserService {
         // 기본 회원 등급을 가져옴
         // 회원 등급은 Beginner, Basic, Superb, VIP, VVIP로 구성됨
         Grade defaultGrade = gradeRepository.findByName("Beginner")
-                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.BRAND_NOT_FOUND));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 등급입니다."));
 
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(userSignUpDto.getPassword());
@@ -48,7 +48,7 @@ public class UserService {
                 .account(userSignUpDto.getAccount())
                 .password(encodedPassword)
                 .name(userSignUpDto.getName())
-                .createdAt(new Date())
+                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .grade(defaultGrade)
                 .build();
         // 저장

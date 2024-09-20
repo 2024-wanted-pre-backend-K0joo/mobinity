@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import wanted.mobinity.domain.grade.domain.Grade;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Table(name = "users")
@@ -28,14 +28,14 @@ public class User {
     private String name;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private Timestamp createdAt;
 
     @ManyToOne
     @JoinColumn(name = "grade_id")
     private Grade grade;
 
     @Builder
-    public User(String account, String password, String name, Date createdAt, Grade grade) {
+    public User(String account, String password, String name, Timestamp createdAt, Grade grade) {
         this.account = account;
         this.password = password;
         this.name = name;
