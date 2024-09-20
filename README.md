@@ -8,6 +8,7 @@
 ![SpringSecurity](https://img.shields.io/badge/Spring%20Security-6DB33F?style=flat&logo=Spring%20Security&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=MySQL&logoColor=white)
 
+</br>
 
 ### 🍀 서비스 개요 🍀
 본 서비스는 로그인 및 사용자 유형에 따라 다른 상품 목록을 제공합니다. </br>
