@@ -26,9 +26,10 @@ public enum ErrorCode {
     AUTHENTICATION_FAIL(401, "U003", "로그인이 필요한 화면입니다"),
     AUTHORITY_INVALID(403, "U004", "권한이 없습니다."),
     ACCOUNT_MISMATCH(401, "U005", "계정 정보가 일치하지 않습니다."),
+    PASSWORD_MISMATCH(401, "U006", "비밀번호가 계정과 일치하지 않습니다."),
     USER_ALREADY_EXIST(400, "U007", "이미 가입된 유저입니다."),
     // User 추가 확장
-    // AUTHENTICATION_EXPIRED(401, "U006", "만료된 토큰입니다.),
+    // AUTHENTICATION_EXPIRED(401, "U008", "만료된 토큰입니다.),
 
     // Product
     PRODUCT_NOT_FOUND(400, "P001", "존재하지 않는 상품입니다."),

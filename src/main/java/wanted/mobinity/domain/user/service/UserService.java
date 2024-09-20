@@ -8,11 +8,14 @@ import org.springframework.stereotype.Service;
 import wanted.mobinity.domain.grade.domain.Grade;
 import wanted.mobinity.domain.grade.repository.GradeRepository;
 import wanted.mobinity.domain.user.domain.User;
-import wanted.mobinity.domain.user.dto.UserSignUpDto;
-import wanted.mobinity.domain.user.dto.UserSignUpResponseDto;
+import wanted.mobinity.domain.user.dto.SignInResponse;
+import wanted.mobinity.domain.user.dto.SignUpRequest;
+import wanted.mobinity.domain.user.dto.SignUpResponse;
 import wanted.mobinity.domain.user.repository.UserRepository;
 import wanted.mobinity.global.error.ErrorCode;
 import wanted.mobinity.global.error.exception.EntityAlreadyExistException;
+import wanted.mobinity.global.error.exception.EntityNotFoundException;
+import wanted.mobinity.global.error.exception.InvalidPasswordException;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -27,11 +30,11 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public UserSignUpResponseDto signUp(UserSignUpDto userSignUpDto){
-        log.info("회원가입 요청: {}", userSignUpDto);
+    public SignUpResponse signUp(SignUpRequest signUpRequest){
+        log.info("회원가입 요청: {}", signUpRequest);
 
         // 아이디 중복 확인
-        if(userRepository.findByAccount(userSignUpDto.getAccount()).isPresent()){
+        if(userRepository.findByAccount(signUpRequest.getAccount()).isPresent()){
             throw new EntityAlreadyExistException(ErrorCode.ACCOUNT_ALEREADY_EXIST);
         }
 
@@ -41,13 +44,13 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 등급입니다."));
 
         // 비밀번호 암호화
-        String encodedPassword = passwordEncoder.encode(userSignUpDto.getPassword());
+        String encodedPassword = passwordEncoder.encode(signUpRequest.getPassword());
 
         // 새로운 User 생성
         User newUser = User.builder()
-                .account(userSignUpDto.getAccount())
+                .account(signUpRequest.getAccount())
                 .password(encodedPassword)
-                .name(userSignUpDto.getName())
+                .name(signUpRequest.getName())
                 .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                 .grade(defaultGrade)
                 .build();
@@ -57,6 +60,18 @@ public class UserService {
         log.info("회원가입 성공: {}", newUser.getAccount());
 
         // 응답 DTO로 변환 후 반환
-        return new UserSignUpResponseDto(newUser);
+        return new SignUpResponse(newUser);
+    }
+
+    @Transactional
+    public SignInResponse login(String account, String password) {
+        User user = userRepository.findByAccount(account)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+        if(!passwordEncoder.matches(password, user.getPassword())){
+            throw new InvalidPasswordException(ErrorCode.PASSWORD_MISMATCH);
+        }
+
+        return new SignInResponse(user);
     }
 }
